@@ -1,52 +1,120 @@
-using Blog.Management.Web.Data;
-using Microsoft.AspNetCore.Identity;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using Blog.Management.Infrastructure.DbContexts;
+using Blog.Management.Infrastructure.Extensions;
+using Blog.Management.Web.AutofacModule;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
+using Serilog.Events;
+using Serilog.Sinks.MSSqlServer;
+using System.Reflection;
 
 namespace Blog.Management.Web
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            #region Bootstrap Logger
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
 
-            // Add services to the container.
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(connectionString));
-            builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
-            builder.Services.AddControllersWithViews();
-
-            var app = builder.Build();
-
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+            var connectionString = configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found."); ;
+            var migrationAssembly = Assembly.GetExecutingAssembly().FullName;
+            if (string.IsNullOrEmpty(migrationAssembly))
             {
-                app.UseMigrationsEndPoint();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                throw new InvalidOperationException("Migration assembly not found.");
             }
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug().WriteTo.MSSqlServer(
+                    connectionString: connectionString,
+                    sinkOptions: new MSSqlServerSinkOptions { TableName = "ApplicationLogs", AutoCreateSqlTable = true })
+                .ReadFrom.Configuration(configuration)
+                .CreateBootstrapLogger();
+            #endregion
 
-            app.UseRouting();
+            try
+            {
+                Log.Information("Application Starting...");
 
-            app.UseAuthorization();
+                var builder = WebApplication.CreateBuilder(args);
 
-            app.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
-            app.MapRazorPages();
+                #region Serilog Configuration
+                builder.Host.UseSerilog((hostBuilderContext, loggerConfiguration) =>
+                {
+                    loggerConfiguration.MinimumLevel.Debug()
+                    .WriteTo.MSSqlServer(
+                        connectionString: connectionString,
+                        sinkOptions: new MSSqlServerSinkOptions { TableName = "ApplicationLogs", AutoCreateSqlTable = true })
+                    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+                    .Enrich.FromLogContext()
+                    .ReadFrom.Configuration(builder.Configuration);
 
-            app.Run();
+                });
+                #endregion
+
+                // Add services to the container.
+
+                //Dbcontext register...
+                builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(connectionString, (x) => x.MigrationsAssembly(migrationAssembly)));
+
+                builder.Services.AddDbContext<BlogManagementDbContext>(options =>
+                options.UseSqlServer(connectionString, (x) => x.MigrationsAssembly(migrationAssembly)));
+
+                //This is Autofac service...
+                builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+                builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
+                {
+                    containerBuilder.RegisterModule(new WebModule(connectionString, migrationAssembly));
+                });
+
+
+                builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+                //This is my extension method here have all identity related configuration...
+                builder.Services.AddIdentity();
+        
+                builder.Services.AddControllersWithViews();
+
+
+                var app = builder.Build();
+
+                // Configure the HTTP request pipeline.
+                if (app.Environment.IsDevelopment())
+                {
+                    app.UseMigrationsEndPoint();
+                }
+                else
+                {
+                    app.UseExceptionHandler("/Home/Error");
+                    app.UseHsts();
+                }
+
+                app.UseHttpsRedirection();
+                app.UseStaticFiles();
+
+                app.UseRouting();
+
+                app.UseAuthorization();
+
+                app.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+                app.Run();
+            }
+            catch(Exception ex)
+            {
+                Log.Fatal(ex, "Application Crashed...");
+            }
+            finally
+            {
+                await Log.CloseAndFlushAsync();
+            }
         }
     }
 }
