@@ -16,16 +16,15 @@ namespace Blog.Management.Web.AutofacModule
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<BlogManagementDbContext>().AsSelf()
-                .WithParameter("connectionString", _connectionString)
-                .WithParameter("migrationAssembly", _migrationAssembly)
-                .InstancePerLifetimeScope();
-
             builder.RegisterType<ApplicationDbContext>().AsSelf()
                .WithParameter("connectionString", _connectionString)
                .WithParameter("migrationAssembly", _migrationAssembly)
                .InstancePerLifetimeScope();
 
+            builder.RegisterType<BlogManagementDbContext>().AsSelf()
+                .WithParameter("connectionString", _connectionString)
+                .WithParameter("migrationAssembly", _migrationAssembly)
+                .InstancePerLifetimeScope();
             
         }
     }
