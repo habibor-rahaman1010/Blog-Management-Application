@@ -105,7 +105,7 @@ namespace Blog.Management.Web
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-                app.Run();
+                await app.RunAsync();
             }
             catch(Exception ex)
             {
