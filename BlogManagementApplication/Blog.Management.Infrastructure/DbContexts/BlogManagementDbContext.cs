@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Blog.Management.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Management.Infrastructure.DbContexts
 {
@@ -23,6 +24,9 @@ namespace Blog.Management.Infrastructure.DbContexts
 
             base.OnConfiguring(optionsBuilder);
         }
+
+        public DbSet<Post> Posts => Set<Post>();
+        
 
     }
 }
