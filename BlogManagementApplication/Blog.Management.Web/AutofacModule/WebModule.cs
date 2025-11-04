@@ -1,5 +1,7 @@
 ﻿using Autofac;
+using Blog.Management.Domain.UnitOfWorkInterface;
 using Blog.Management.Infrastructure.DbContexts;
+using Blog.Management.Infrastructure.UnitOfWork;
 
 namespace Blog.Management.Web.AutofacModule
 {
@@ -25,7 +27,12 @@ namespace Blog.Management.Web.AutofacModule
                 .WithParameter("connectionString", _connectionString)
                 .WithParameter("migrationAssembly", _migrationAssembly)
                 .InstancePerLifetimeScope();
-            
+
+            builder.RegisterType<ApplicationUnitOfWork<ApplicationDbContext>>()
+                .As<IApplicationUnitOfWork>().InstancePerLifetimeScope();
+
+            builder.RegisterType<ApplicationUnitOfWork<BlogManagementDbContext>>()
+                .As<IApplicationUnitOfWork>().InstancePerLifetimeScope();
         }
     }
 }
