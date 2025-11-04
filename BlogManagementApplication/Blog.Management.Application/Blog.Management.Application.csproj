@@ -10,4 +10,9 @@
     <ProjectReference Include="..\Blog.Management.Domain\Blog.Management.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\" />
+    <Folder Include="ServiceInterfaces\" />
+  </ItemGroup>
+
 </Project>
