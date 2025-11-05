@@ -9,20 +9,22 @@ namespace Blog.Management.Domain.RepositoryInterfaces
         where TEntity : class, IBaseEntity<TKey>
         where TKey : IComparable<TKey>
     {
-        IEnumerable<TEntity> GetAll(
+        public IQueryable<TEntity> GetDbSetAsQuery();
+
+        public IEnumerable<TEntity> GetAll(
             Expression<Func<TEntity, bool>> filter,
             Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
             bool isTrackingOff = false);
 
 
-        IEnumerable<TEntity> GetAll(
+        public IEnumerable<TEntity> GetAll(
             Expression<Func<TEntity, bool>>? filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
             Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
             bool isTrackingOff = false);
 
 
-        PagedWithResult<TEntity> GetPagedList(
+        public PagedWithResult<TEntity> GetPagedList(
             Expression<Func<TEntity, bool>>? filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
             Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
@@ -31,7 +33,7 @@ namespace Blog.Management.Domain.RepositoryInterfaces
             bool isTrackingOff = false);
 
 
-        Task<IEnumerable<TEntity>> GetAllAsync(
+        public Task<IEnumerable<TEntity>> GetAllAsync(
             Expression<Func<TEntity, bool>>? filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
             Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
@@ -39,14 +41,14 @@ namespace Blog.Management.Domain.RepositoryInterfaces
             CancellationToken cancellationToken = default);
 
 
-        Task<IEnumerable<TEntity>> GetAllAsync(
+        public Task<IEnumerable<TEntity>> GetAllAsync(
             Expression<Func<TEntity, bool>> filter,
             Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
             bool isTrackingOff = false,
             CancellationToken cancellationToken = default);
 
 
-        Task<PagedWithResult<TEntity>> GetPagedListAsync(
+        public Task<PagedWithResult<TEntity>> GetPagedListAsync(
             Expression<Func<TEntity, bool>>? filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
             Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
@@ -56,7 +58,7 @@ namespace Blog.Management.Domain.RepositoryInterfaces
             CancellationToken cancellationToken = default);
 
 
-        Task<IEnumerable<TResult>> GetAllAsync<TResult>(
+        public Task<IEnumerable<TResult>> GetAllAsync<TResult>(
             Expression<Func<TEntity, TResult>> selector,
             Expression<Func<TEntity, bool>>? predicate = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
@@ -66,14 +68,14 @@ namespace Blog.Management.Domain.RepositoryInterfaces
             where TResult : class;
 
 
-        IEnumerable<TEntity> GetAllDynamic(
+        public IEnumerable<TEntity> GetAllDynamic(
             Expression<Func<TEntity, bool>>? filter = null,
             string? orderBy = null,
             Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
             bool isTrackingOff = false);
 
 
-        PagedWithResult<TEntity> GetPagedListDynamic(
+        public PagedWithResult<TEntity> GetPagedListDynamic(
             Expression<Func<TEntity, bool>>? filter = null,
             string? orderBy = null,
             Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
@@ -82,7 +84,7 @@ namespace Blog.Management.Domain.RepositoryInterfaces
             bool isTrackingOff = false);
 
 
-        Task<IEnumerable<TEntity>> GetAllDynamicAsync(
+        public Task<IEnumerable<TEntity>> GetAllDynamicAsync(
             Expression<Func<TEntity, bool>>? filter = null,
             string? orderBy = null,
             Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
@@ -90,7 +92,7 @@ namespace Blog.Management.Domain.RepositoryInterfaces
             CancellationToken cancellationToken = default);
 
 
-        Task<PagedWithResult<TEntity>> GetPagedListDynamicAsync(
+        public Task<PagedWithResult<TEntity>> GetPagedListDynamicAsync(
             Expression<Func<TEntity, bool>>? filter = null,
             string? orderBy = null,
             Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
@@ -100,7 +102,7 @@ namespace Blog.Management.Domain.RepositoryInterfaces
             CancellationToken cancellationToken = default);
 
 
-        Task<TResult> SingleOrDefaultAsync<TResult>(
+        public Task<TResult> SingleOrDefaultAsync<TResult>(
             Expression<Func<TEntity, TResult>> selector,
             Expression<Func<TEntity, bool>>? predicate = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,

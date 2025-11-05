@@ -3,6 +3,7 @@ using Autofac.Extensions.DependencyInjection;
 using Blog.Management.Infrastructure.DbContexts;
 using Blog.Management.Infrastructure.Extensions;
 using Blog.Management.Web.AutofacModule;
+using Blog.Management.Web.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
@@ -72,6 +73,7 @@ namespace Blog.Management.Web
                     containerBuilder.RegisterModule(new WebModule(connectionString, migrationAssembly));
                 });
 
+                builder.Services.AddMapsterConfiguration();
 
                 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

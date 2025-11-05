@@ -730,5 +730,10 @@ namespace Blog.Management.Infrastructure.Repositories
                 return await query.Select(selector).FirstOrDefaultAsync(cancellationToken);
             }
         }
+
+        public IQueryable<TEntity> GetDbSetAsQuery()
+        {
+            return _dbSet.AsQueryable<TEntity>();
+        }
     }
 }
