@@ -1,0 +1,63 @@
+﻿@model CategoryCreateDto;
+
+@{
+    ViewData["Title"] = "Create Category";
+}
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="ml-2">Add New Category</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Category</a></li>
+                    <li class="breadcrumb-item active">Create New</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div>
+            <form asp-antiforgery="true" asp-area="Admin" asp-controller="Category" asp-action="CreateCategory" method="post" enctype="multipart/form-data">
+                <!--Form-1 -->
+                <div class="col-sm-12">
+                    <!-- general form elements -->
+                    <div class="card card-primary" style="border-top: 4px solid #3c8dbc;">
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="">
+                                <!-- First row of form inputs -->
+                                <div class="mb-3 px-3">
+                                    <div class="form-group">
+                                        <label asp-for="Name">Category Name*</label>
+                                        <input type="text" asp-for="Name" class="form-control" placeholder="Category Name" />
+                                        <span asp-validation-for="Name" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                </div>
+                      
+                <div>
+                    <button type="submit" class="btn btn-success">Save Category</button>
+                    <a class="btn btn-secondary" asp-area="Admin" asp-controller="Category" asp-action="CategoryList">Back To List</a>
+                </div>
+            </form>
+        </div>
+        <!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- /.content -->
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

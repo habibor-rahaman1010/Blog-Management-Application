@@ -1,10 +1,11 @@
 ﻿using Blog.Management.Application.ApplicationDtos.CategorisDtos;
+using Blog.Management.Domain.Utilities;
 
 namespace Blog.Management.Application.ServiceInterfaces
 {
     public interface ICategoryManagementService
     {
-        public Task<List<CategoryDto>> GetCategoriesAsync();
+        public Task<PagedWithResult<CategoryDto>> GetCategoriesAsync(int pageIndex, int pageSize);
         public Task<CategoryDto> GetCategoryByIdAsync(Guid id);
         public Task<CategoryDto> CreateCategoryAsync(CategoryCreateDto CreateRequestDto);
         public Task<CategoryDto> UpdateCategoryAsync(Guid id, CategoryUpdateDto updateRequestDto);

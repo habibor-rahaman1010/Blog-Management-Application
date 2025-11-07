@@ -2,6 +2,7 @@
 using Blog.Management.Application.ServiceInterfaces;
 using Blog.Management.Domain.Entities;
 using Blog.Management.Domain.UnitOfWorkInterface;
+using Blog.Management.Domain.Utilities;
 using Mapster;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
@@ -13,13 +14,16 @@ namespace Blog.Management.Application.Services
     {
         private readonly IApplicationUnitOfWork _unitOfWork;
         private ILogger<CategoryManagementService> _logger;
+        private readonly IApplicationTime _applicationTime;
         private readonly IMapper _mapper;
 
         public CategoryManagementService(IApplicationUnitOfWork unitOfWork, IMapper mapper,
+            IApplicationTime applicationTime,
             ILogger<CategoryManagementService> logger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _applicationTime = applicationTime;
             _logger = logger;
         }
 
@@ -30,6 +34,8 @@ namespace Blog.Management.Application.Services
             try
             {
                 var category = await _mapper.From(CreateRequestDto).AdaptToTypeAsync<Category>();
+                category.CreatedBy = "Habibor Rahaman";
+                category.CreatedAt = _applicationTime.GetCurrentTime();
 
                 await _unitOfWork.CategoryRepository.AddAsync(category);
                 await _unitOfWork.SaveChangesAsync();
@@ -84,17 +90,17 @@ namespace Blog.Management.Application.Services
             }
         }
 
-        public async Task<List<CategoryDto>> GetCategoriesAsync()
+        public async Task<PagedWithResult<CategoryDto>> GetCategoriesAsync(int pageIndex, int pageSize)
         {
             try
             {
-                var categories = await _unitOfWork.CategoryRepository.GetAllAsync();
-                if (categories != null && categories.Any() != false)
+                var categories = await _unitOfWork.CategoryRepository.GetPagedListAsync(null, null, null, pageIndex, pageSize);
+                if (categories != null && categories.Items.Any() != false)
                 {
-                    return await _mapper.From(categories).AdaptToTypeAsync<List<CategoryDto>>();
+                    return await _mapper.From(categories).AdaptToTypeAsync<PagedWithResult<CategoryDto>>();
                 }
 
-                return new List<CategoryDto>();
+                return new PagedWithResult<CategoryDto>();
             }
             catch (Exception ex)
             {
@@ -142,6 +148,8 @@ namespace Blog.Management.Application.Services
                 //updateRequestDto.Adapt(category); -> Other way to maped!
 
                 _mapper.Map(updateRequestDto, category);
+                category.UpdatedAt = _applicationTime.GetCurrentTime();
+
                 await _unitOfWork.CategoryRepository.UpdateAsync(category);
                 await _unitOfWork.SaveChangesAsync();
                 await _unitOfWork.CommitAsync();

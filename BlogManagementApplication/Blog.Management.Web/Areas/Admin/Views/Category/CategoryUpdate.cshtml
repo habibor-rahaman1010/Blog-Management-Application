@@ -1,0 +1,53 @@
+﻿@model CategoryUpdateDto;
+
+@{
+    ViewData["Title"] = "Update Category";
+}
+
+<!-- Content Header -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="ml-2">@ViewData["Title"]</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Category</a></li>
+                    <li class="breadcrumb-item active">@ViewData["Title"]</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <form asp-antiforgery="true" asp-area="Admin" asp-controller="Category" asp-action="CategoryUpdate" method="post" enctype="multipart/form-data">
+          <input type="hidden" asp-for="Id" />
+            <div class="col-sm-12">
+                <div class="card card-primary" style="border-top: 4px solid #3c8dbc;">
+                    <div class="card-body">
+                        <div class="mb-3 px-3">
+                            <div class="form-group">
+                                <label asp-for="Name">Category Name*</label>
+                                <input type="text" asp-for="Name" class="form-control" placeholder="Category Name" />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="btn btn-success">Update Category</button>
+                <a class="btn btn-secondary" asp-area="Admin" asp-controller="Category" asp-action="CategoryList">Back To List</a>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

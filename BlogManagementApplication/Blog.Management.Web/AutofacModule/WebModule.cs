@@ -1,6 +1,11 @@
 ﻿using Autofac;
+using Blog.Management.Application.ServiceInterfaces;
+using Blog.Management.Application.Services;
+using Blog.Management.Domain.RepositoryInterfaces;
 using Blog.Management.Domain.UnitOfWorkInterface;
+using Blog.Management.Domain.Utilities;
 using Blog.Management.Infrastructure.DbContexts;
+using Blog.Management.Infrastructure.Repositories;
 using Blog.Management.Infrastructure.UnitOfWork;
 
 namespace Blog.Management.Web.AutofacModule
@@ -33,6 +38,16 @@ namespace Blog.Management.Web.AutofacModule
 
             builder.RegisterType<ApplicationUnitOfWork<BlogManagementDbContext>>()
                 .As<IApplicationUnitOfWork>().InstancePerLifetimeScope();
+
+            builder.RegisterType<ApplicationTime>()
+                .As<IApplicationTime>().SingleInstance();
+
+            builder.RegisterType<CategoryRepository>()
+                .As<ICategoryRepository>().InstancePerLifetimeScope();
+
+            builder.RegisterType<CategoryManagementService>()
+                .As<ICategoryManagementService>().InstancePerLifetimeScope();
+
         }
     }
 }
