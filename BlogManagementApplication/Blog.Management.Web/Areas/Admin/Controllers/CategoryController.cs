@@ -31,6 +31,25 @@ namespace Blog.Management.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> CategoryDetails ([FromRoute] Guid id)
+        {
+            try
+            {
+                var result = await _categoryManagementService.GetCategoryByIdAsync(id);
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                return View(result);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Exception Occured: ", ex);
+            }
+        }
+
+        [HttpGet]
         [ValidateModel]
         public IActionResult CreateCategory()
         {
@@ -96,5 +115,39 @@ namespace Blog.Management.Web.Areas.Admin.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var category = await _categoryManagementService.GetCategoryByIdAsync(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            return View(category);
+        }
+
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        {
+            try
+            {
+                var success = await _categoryManagementService.DeleteCategoryAsync(id);
+                if (!success)
+                {
+                    return NotFound();
+                }
+
+                return RedirectToAction(nameof(CategoryList));
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Error occurred while deleting category", ex);
+            }
+        }
+
     }
 }

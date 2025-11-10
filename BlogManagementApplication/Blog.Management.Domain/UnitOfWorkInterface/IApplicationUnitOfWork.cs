@@ -5,5 +5,6 @@ namespace Blog.Management.Domain.UnitOfWorkInterface
     public interface IApplicationUnitOfWork : IUnitOfWork
     {
         public ICategoryRepository CategoryRepository { get; }
+        public IBlogPostRepository BlogPostRepository { get; }
     }
 }

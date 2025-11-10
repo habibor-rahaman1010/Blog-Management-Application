@@ -65,10 +65,10 @@ namespace Blog.Management.Application.Services
             try
             {
                 await _unitOfWork.CategoryRepository.DeleteAsync(x => x.Id == id);
-                var aknowledge = await _unitOfWork.SaveChangesAsync();
+                var affected = await _unitOfWork.SaveChangesAsync();
                 await _unitOfWork.CommitAsync();
 
-                if (aknowledge > 0)
+                if (affected > 0)
                 {
                     return true;
                 }

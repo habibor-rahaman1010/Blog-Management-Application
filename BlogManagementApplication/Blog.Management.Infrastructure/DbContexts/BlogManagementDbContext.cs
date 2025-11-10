@@ -25,8 +25,6 @@ namespace Blog.Management.Infrastructure.DbContexts
             base.OnConfiguring(optionsBuilder);
         }
 
-        public DbSet<Post> Posts => Set<Post>();
-        
-
+        public DbSet<BlogPost> BlogPosts => Set<BlogPost>();
     }
 }

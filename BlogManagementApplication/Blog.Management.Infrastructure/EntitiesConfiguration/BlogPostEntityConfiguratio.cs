@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Blog.Management.Infrastructure.EntitiesConfiguration
 {
-    public class PostEntityConfiguratio : IEntityTypeConfiguration<Post>
+    public class BlogPostEntityConfiguratio : IEntityTypeConfiguration<BlogPost>
     {
-        public void Configure(EntityTypeBuilder<Post> builder)
+        public void Configure(EntityTypeBuilder<BlogPost> builder)
         {
-            builder.ToTable("Posts");
+            builder.ToTable("BlogPosts");
 
             builder.HasKey(p => p.Id);
 

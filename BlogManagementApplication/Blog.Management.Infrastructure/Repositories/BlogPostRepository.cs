@@ -2,14 +2,13 @@
 using Blog.Management.Domain.RepositoryInterfaces;
 using Blog.Management.Infrastructure.DbContexts;
 
-
 namespace Blog.Management.Infrastructure.Repositories
 {
-    public class CategoryRepository : GenericRepository<Category, Guid>, ICategoryRepository
+    public class BlogPostRepository : GenericRepository<BlogPost, Guid>, IBlogPostRepository
     {
         private readonly BlogManagementDbContext _dbContext;
 
-        public CategoryRepository(BlogManagementDbContext dbContext) : base(dbContext)
+        public BlogPostRepository(BlogManagementDbContext dbContext) : base(dbContext)
         {
             _dbContext = dbContext;
         }

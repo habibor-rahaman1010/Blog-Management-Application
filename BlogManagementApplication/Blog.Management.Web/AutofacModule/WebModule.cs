@@ -48,6 +48,12 @@ namespace Blog.Management.Web.AutofacModule
             builder.RegisterType<CategoryManagementService>()
                 .As<ICategoryManagementService>().InstancePerLifetimeScope();
 
+            builder.RegisterType<BlogPostRepository>()
+                .As<IBlogPostRepository>().InstancePerLifetimeScope();
+
+            builder.RegisterType<BlogPostManagementService>()
+                .As<IBlogPostManagementService>().InstancePerLifetimeScope();
+
         }
     }
 }

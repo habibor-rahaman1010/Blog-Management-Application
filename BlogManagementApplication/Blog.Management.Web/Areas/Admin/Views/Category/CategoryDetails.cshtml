@@ -1,0 +1,33 @@
+﻿@model CategoryDto;
+
+@{
+    ViewData["Title"] = "Category Details";
+}
+
+<h2>Category Details</h2>
+
+<div class="card p-4 shadow-sm rounded-lg bg-white">
+    <dl class="row">
+        <dt class="col-sm-3">ID</dt>
+        <dd class="col-sm-9">@Model.Id</dd>
+
+        <dt class="col-sm-3">Name</dt>
+        <dd class="col-sm-9">@Model.Name</dd>
+
+        <dt class="col-sm-3">Created By</dt>
+        <dd class="col-sm-9">@Model.CreatedBy</dd>
+
+        <dt class="col-sm-3">Created At</dt>
+        <dd class="col-sm-9">@Model.CreatedAt.ToString("yyyy-MM-dd hh:mm tt")</dd>
+
+        <dt class="col-sm-3">Updated At</dt>
+        <dd class="col-sm-9">@(Model.UpdatedAt?.ToString("yyyy-MM-dd hh:mm tt") ?? "Not Updated")</dd>
+    </dl>
+
+    <a asp-area="Admin"
+       asp-controller="Category"
+       asp-action="CategoryList"
+       class="btn btn-success w-25 btn-sm px-4 py-2 mt-3 fw-semibold shadow-sm">
+        <i class="bi bi-arrow-left-circle me-2"></i> Back to List
+    </a>
+</div>
