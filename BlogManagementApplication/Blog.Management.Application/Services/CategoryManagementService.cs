@@ -170,5 +170,18 @@ namespace Blog.Management.Application.Services
                 throw new ApplicationException($"Unable to update category with ID {id}.", ex);
             }
         }
+
+        public async Task<IEnumerable<CategoryDto>> GetAllCategory()
+        {
+            try
+            {
+                var categories = await _unitOfWork.CategoryRepository.GetAllAsync();
+                return await _mapper.From(categories).AdaptToTypeAsync<IEnumerable<CategoryDto>>();
+            }
+            catch(Exception ex)
+            {
+                throw new ApplicationException("Exception Occoured: ", ex);
+            }
+        }
     }
 }

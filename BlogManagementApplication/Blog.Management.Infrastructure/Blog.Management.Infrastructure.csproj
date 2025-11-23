@@ -23,4 +23,8 @@
     <ProjectReference Include="..\Blog.Management.Domain\Blog.Management.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Utilities\" />
+  </ItemGroup>
+
 </Project>
