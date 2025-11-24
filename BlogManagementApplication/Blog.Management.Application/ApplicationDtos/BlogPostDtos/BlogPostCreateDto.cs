@@ -1,5 +1,6 @@
 ﻿using Blog.Management.Application.ApplicationDtos.CategorisDtos;
 using Blog.Management.Infrastructure.Utilities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Blog.Management.Application.ApplicationDtos.BlogPostDtos
@@ -11,6 +12,7 @@ namespace Blog.Management.Application.ApplicationDtos.BlogPostDtos
         public string Content { get; set; }
         public string Author { get; set; }
         public bool IsActive { get; set; }
+        public IFormFile? CoverImageFile { get; set; }
         public string CoverImageUrl { get; set; }
         public Guid CategoryId { get; set; }
 

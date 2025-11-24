@@ -1,7 +1,9 @@
 ﻿using Blog.Management.Application.ApplicationDtos.BlogPostDtos;
 using Blog.Management.Application.ServiceInterfaces;
+using Blog.Management.Domain.Utilities;
 using Blog.Management.Web.CustomActionFilters;
 using MapsterMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Management.Web.Areas.Admin.Controllers
@@ -11,15 +13,18 @@ namespace Blog.Management.Web.Areas.Admin.Controllers
     {
         private readonly IBlogPostManagementService _blogPostManagementService;
         private readonly ICategoryManagementService _categoryManagementService;
+        private readonly IFileService _fileService;
         private readonly ILogger<BlogPostController> _logger;
         private readonly IMapper _mapper;
 
         public BlogPostController(IBlogPostManagementService blogPostManagementService,
+            IFileService fileService,
             ICategoryManagementService categoryManagementService,
             IMapper mapper,
             ILogger<BlogPostController> logger)
         {
             _mapper = mapper;
+            _fileService = fileService;
             _blogPostManagementService = blogPostManagementService;
             _categoryManagementService = categoryManagementService;
             _logger = logger;
@@ -51,7 +56,18 @@ namespace Blog.Management.Web.Areas.Admin.Controllers
         {
             try
             {
-                throw new NotFiniteNumberException();
+                request.Id = Guid.NewGuid();
+                if (request.CoverImageFile != null)
+                {
+                    var result = _fileService.SaveImage(request.CoverImageFile);
+                    if (result.Item1 == 1)
+                    {                     
+                        request.CoverImageUrl = result.Item2;
+                    }
+                }
+
+                await _blogPostManagementService.CreateBlogPostAsync(request); 
+                return RedirectToAction(nameof(BlogList));
             }
             catch (Exception ex)
             {

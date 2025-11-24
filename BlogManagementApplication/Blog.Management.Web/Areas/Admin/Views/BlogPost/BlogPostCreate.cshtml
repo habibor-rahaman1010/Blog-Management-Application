@@ -50,14 +50,14 @@
 
                 <!-- Cover Image -->
                 <div class="form-group">
-                    <label for="CoverImage">Cover Image</label>
-                    <div class="input-group">
-                        <div class="custom-file">
-                            <input type="file" name="CoverImage" class="custom-file-input" id="CoverImage">
-                            <label class="custom-file-label" for="CoverImage">Choose image</label>
-                            <span asp-validation-for="CoverImageUrl" class="text-danger"></span>
-                        </div>
+                    <label asp-for="CoverImageFile" class="control-label">Cover Image*</label>
+                    <div class="custom-file">
+                        <label class="custom-file-label" asp-for="CoverImageFile">Choose your file</label>
+                        <input style="width: 400px; cursor:pointer" asp-for="CoverImageFile" class="custom-file-input" id="productImage">
+                        <p id="imageError"></p>
                     </div>
+                    <p class="mt-2">Max File size: 5MB <br /> Allowed File: .jpeg, .jpg, .png <br /> Aspect ratio should be 1:1</p>
+                    <span asp-validation-for="CoverImageFile" class="text-danger"></span>
                 </div>
 
             </div>
@@ -73,4 +73,34 @@
 <!-- /.content -->
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const productImageInput = document.getElementById('productImage');
+        const imageError = document.getElementById('imageError');
+
+        productImageInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+
+            if (file) {
+                // Validate file size and aspect ratio
+                if (file.size > 5 * 1024 * 1024) {
+                    imageError.textContent = 'File size is too large.';
+                    productImageInput.value = '';
+                } else if (file.type.startsWith('image/') && file.width === file.height) {
+                    // Handle successful upload or preview
+                    imageError.textContent = '';
+                    // ...
+                } else {
+                    imageError.textContent = 'Invalid image format or aspect ratio.';
+                    productImageInput.value = '';
+                }
+            }
+        });
+
+        document.querySelector('.custom-file-input').addEventListener('change', function (e) {
+            var fileName = e.target.files[0].name;
+            var label = e.target.nextElementSibling;
+            label.textContent = fileName;
+        });
+    </script>
 }

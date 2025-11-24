@@ -54,6 +54,8 @@ namespace Blog.Management.Web.AutofacModule
             builder.RegisterType<BlogPostManagementService>()
                 .As<IBlogPostManagementService>().InstancePerLifetimeScope();
 
+            builder.RegisterType<FileService>().As<IFileService>().SingleInstance();
+
         }
     }
 }

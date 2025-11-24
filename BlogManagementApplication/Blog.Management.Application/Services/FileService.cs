@@ -6,43 +6,46 @@ namespace Blog.Management.Application.Services
 {
     public class FileService : IFileService
     {
-        public IWebHostEnvironment Environment { get; set; }
+        private readonly IWebHostEnvironment _env;
 
         public FileService(IWebHostEnvironment env)
         {
-            Environment = env;
+            _env = env;
         }
 
         public Tuple<int, string> SaveImage(IFormFile imageFile)
         {
             try
             {
-                var wwwPath = Environment.WebRootPath;
-                var path = Path.Combine(wwwPath, "Uploads/Profile");
-                if (!Directory.Exists(path))
+                var wwwPath = _env.WebRootPath;
+                var folderPath = Path.Combine(wwwPath, "Uploads", "BlogImages");
+
+                if (!Directory.Exists(folderPath))
                 {
-                    Directory.CreateDirectory(path);
+                    Directory.CreateDirectory(folderPath);
                 }
 
-                // Check the allowed extenstions
-                var ext = Path.GetExtension(imageFile.FileName);
-                var allowedExtensions = new string[] { ".jpg", ".png", ".jpeg" };
-                if (!allowedExtensions.Contains(ext))
+                var extension = Path.GetExtension(imageFile.FileName).ToLower();
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+
+                if (!allowedExtensions.Contains(extension))
                 {
-                    string msg = string.Format("Only {0} extensions are allowed", string.Join(",", allowedExtensions));
-                    return new Tuple<int, string>(0, msg);
+                    return new Tuple<int, string>(0, $"Only {string.Join(",", allowedExtensions)} extensions are allowed");
                 }
-                string uniqueString = Guid.NewGuid().ToString();
-                var newFileName = uniqueString + ext;
-                var fileWithPath = Path.Combine(path, newFileName);
-                var stream = new FileStream(fileWithPath, FileMode.Create);
-                imageFile.CopyTo(stream);
-                stream.Close();
-                return new Tuple<int, string>(1, newFileName);
+
+                string fileName = $"{Guid.NewGuid()}{extension}";
+                var filePath = Path.Combine(folderPath, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    imageFile.CopyTo(stream);
+                }
+
+                return new Tuple<int, string>(1, fileName);
             }
-            catch (Exception ex)
+            catch
             {
-                return new Tuple<int, string>(0, "Error has occured");
+                return new Tuple<int, string>(0, "Error has occurred");
             }
         }
 
@@ -50,20 +53,20 @@ namespace Blog.Management.Application.Services
         {
             try
             {
-                var wwwPath = Environment.WebRootPath;
-                var path = Path.Combine(wwwPath, "Uploads/Profile\\", imageFileName);
+                var path = Path.Combine(_env.WebRootPath, "Uploads", "BlogImages", imageFileName);
+
                 if (File.Exists(path))
                 {
                     File.Delete(path);
                     return true;
                 }
+
                 return false;
             }
-            catch (Exception ex)
+            catch
             {
                 return false;
             }
         }
-
     }
 }
