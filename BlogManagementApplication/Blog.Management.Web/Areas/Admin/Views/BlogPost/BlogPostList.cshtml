@@ -1,0 +1,98 @@
+﻿@model PagedWithResult<BlogPostDto>
+
+@{
+    ViewData["Title"] = "Blog Post List";
+    int currentPage = Model.PageIndex;
+    int totalPages = (int)Math.Ceiling((double)Model.Total / Model.PageSize);
+    int pageSize = Model.PageSize;
+}
+
+<div>
+    <h2 class="mb-4">@ViewData["Title"]</h2>
+
+    <table class="table table-bordered table-striped align-middle">
+        <thead class="table-dark text-center">
+            <tr>
+                <th style="width:5%">No</th>
+                <th>Cover Image</th>
+                <th>Title</th>
+                <th>Author Name</th>
+                <th>Created At</th>
+                <th>Updated At</th>
+                <th style="width:20%">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Items.Any())
+            {
+                int index = (currentPage - 1) * pageSize + 1;
+                foreach (var post in Model.Items)
+                {
+                    <tr>
+
+                        <td class="text-center">@index</td>
+                        <td>
+                            <img src="~/Uploads/BlogImages/@post.CoverImageUrl" alt="Cover Image" style="width:80px; height:80px; object-fit:cover;" />
+                        </td>
+
+                        <td>@post.Title</td>
+                        <td>@post.Author</td>
+                        <td>@post.CreatedAt.ToString("yyyy-MM-dd hh:mm:ss tt")</td>
+                        <td>@(post.UpdatedAt.HasValue? post.UpdatedAt.Value.ToString("yyyy-MM-dd hh:mm tt") : "Not Updated")</td>
+                        <td class="text-center">
+                            <a asp-area="Admin" asp-controller="Category" asp-action="CategoryUpdate" asp-route-id="@post.Id"
+                               class="btn btn-sm btn-primary me-1">
+                                <i class="bi bi-pencil-square"></i> Edit
+                            </a>
+                            <a asp-area="Admin" asp-controller="Category" asp-action="CategoryDetails" asp-route-id="@post.Id"
+                               class="btn btn-sm btn-info text-white me-1">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+
+                            <a asp-area="Admin" asp-controller="Category" asp-action="Delete" asp-route-id="@post.Id"
+                               class="btn btn-sm btn-danger text-white me-1">
+                                <i class="bi bi-trash"></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+                    index++;
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6" class="text-center">No blog post found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+    @if (totalPages > 1)
+    {
+        <nav aria-label="Category pagination">
+            <ul class="pagination justify-content-center">
+                <!-- Previous Button -->
+                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" asp-controller="Category" asp-action="CategoryList" asp-area="Admin"
+                       asp-route-pageIndex="@(currentPage - 1)">Previous</a>
+                </li>
+
+                <!-- Page Numbers -->
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    <li class="page-item @(i == currentPage ? "active" : "")">
+                        <a class="page-link" asp-controller="Category" asp-action="CategoryList" asp-area="Admin"
+                           asp-route-pageIndex="@i">@i</a>
+                    </li>
+                }
+
+                <!-- Next Button -->
+                <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                    <a class="page-link" asp-controller="Category" asp-action="CategoryList" asp-area="Admin"
+                       asp-route-pageIndex="@(currentPage + 1)">Next</a>
+                </li>
+            </ul>
+        </nav>
+    }
+</div>

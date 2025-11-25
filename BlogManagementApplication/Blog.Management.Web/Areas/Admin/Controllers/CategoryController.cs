@@ -24,9 +24,9 @@ namespace Blog.Management.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> CategoryList(int pageIndex = 1)
+        public async Task<IActionResult> CategoryList(int pageIndex = 1, int pageSize = 10)
         {
-            var categoris = await _categoryManagementService.GetCategoriesAsync(pageIndex, 10);
+            var categoris = await _categoryManagementService.GetCategoriesAsync(pageIndex, pageSize);
             return View(categoris);
         }
 

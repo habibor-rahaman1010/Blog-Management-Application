@@ -3,7 +3,6 @@ using Blog.Management.Application.ServiceInterfaces;
 using Blog.Management.Domain.Utilities;
 using Blog.Management.Web.CustomActionFilters;
 using MapsterMapper;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Management.Web.Areas.Admin.Controllers
@@ -30,9 +29,10 @@ namespace Blog.Management.Web.Areas.Admin.Controllers
             _logger = logger;
         }
 
-        public IActionResult BlogList()
+        public async Task<IActionResult> BlogPostList(int pageIndex = 1, int pageSize = 10)
         {
-            return View();
+            var blogPost = await _blogPostManagementService.GetBlogPostsAsync(pageIndex, pageSize);
+            return View(blogPost);
         }
 
         [HttpGet]
@@ -67,7 +67,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers
                 }
 
                 await _blogPostManagementService.CreateBlogPostAsync(request); 
-                return RedirectToAction(nameof(BlogList));
+                return RedirectToAction(nameof(BlogPostList));
             }
             catch (Exception ex)
             {
