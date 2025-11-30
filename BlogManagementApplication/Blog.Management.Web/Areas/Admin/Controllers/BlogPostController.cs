@@ -1,7 +1,10 @@
 ﻿using Blog.Management.Application.ApplicationDtos.BlogPostDtos;
 using Blog.Management.Application.ServiceInterfaces;
 using Blog.Management.Domain.Utilities;
+using Blog.Management.Infrastructure.Extensions;
+using Blog.Management.Web.Areas.Admin.Models;
 using Blog.Management.Web.CustomActionFilters;
+using Mapster;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,7 +32,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> BlogPostList(int pageIndex = 1, int pageSize = 10)
+        public async Task<IActionResult> BlogPostList(int pageIndex = 1, int pageSize = 2)
         {
             var blogPost = await _blogPostManagementService.GetBlogPostsAsync(pageIndex, pageSize);
             return View(blogPost);
@@ -66,11 +69,84 @@ namespace Blog.Management.Web.Areas.Admin.Controllers
                     }
                 }
 
-                await _blogPostManagementService.CreateBlogPostAsync(request); 
+                await _blogPostManagementService.CreateBlogPostAsync(request);
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Blog post created successfuly",
+                    Type = ResponseTypes.Success
+                });
                 return RedirectToAction(nameof(BlogPostList));
             }
             catch (Exception ex)
             {
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Blog post creation failed",
+                    Type = ResponseTypes.Danger
+                });
+                throw new ApplicationException("Exception Occured: ", ex);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> BlogPostUpdate(Guid id)
+        {
+            try
+            {
+                var existingPost = await _blogPostManagementService.GetBlogPostByIdAsync(id);
+                var blogPostUpdateDto = await _mapper.From(existingPost).AdaptToTypeAsync<BlogPostUpdateDto>();
+                blogPostUpdateDto.SetCategoryValues(await _categoryManagementService.GetAllCategory());
+                if (existingPost == null)
+                {
+                    return NotFound();
+                }
+                return View(blogPostUpdateDto);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Exception Occured: ", ex);
+            }
+        }
+
+        [HttpPost, ValidateModel]
+        [AutoValidateAntiforgeryToken]
+        public async Task<IActionResult> BlogPostUpdate(Guid id, BlogPostUpdateDto request)
+        {
+            try
+            {
+                var existing = await _blogPostManagementService.GetBlogPostByIdAsync(id);
+
+                if (request.CoverImageFile != null)
+                {
+                    var result = _fileService.SaveImage(request.CoverImageFile);
+                    if (result.Item1 == 1)
+                    {
+                        var oldImage = existing.CoverImageUrl;
+                        request.CoverImageUrl = result.Item2;
+                        var isDeleted = _fileService.DeleteImage(oldImage);
+                    }
+                }
+                else
+                {
+                    request.CoverImageUrl = existing.CoverImageUrl;
+                }
+
+                await _blogPostManagementService.UpdateBlogPostAsync(id, request);
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Blog post updated successfuly",
+                    Type = ResponseTypes.Success
+                });
+                return RedirectToAction(nameof(BlogPostList));
+
+            }
+            catch (Exception ex)
+            {
+                TempData.Put("ResponseMessage", new ResponseModel
+                {
+                    Message = "Blog post update failed",
+                    Type = ResponseTypes.Danger
+                });
                 throw new ApplicationException("Exception Occured: ", ex);
             }
         }

@@ -1,0 +1,143 @@
+﻿@model BlogPostUpdateDto
+
+@{
+    ViewData["Title"] = "Update Blog Post";
+}
+
+<style>
+    #container {
+        width: 1000px;
+        margin: 20px auto;
+    }
+
+    .ck-editor__editable[role="textbox"] {
+        min-height: 300px;
+    }
+
+    .ck-content .image {
+        max-width: 80%;
+        margin: 20px auto;
+    }
+
+    #productImage {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    #imageError {
+        color: teal;
+    }
+
+    #oldImage {
+        width: 120px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+</style>
+
+<div class="container pt-3">
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Update Blog Post</h3>
+        </div>
+
+        <form asp-antiforgery="true" asp-area="Admin" asp-controller="BlogPost" asp-action="BlogPostUpdate" method="post" enctype="multipart/form-data">
+            <div class="card-body">
+
+                @* Hidden ID *@
+                <input type="hidden" asp-for="Id" />
+
+                <!-- Title -->
+                <div class="form-group">
+                    <label for="Title">Title</label>
+                    <input asp-for="Title" class="form-control" placeholder="Enter blog title" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <!-- Category Dropdown -->
+                <div class="form-group mt-3">
+                    <label for="CategoryId">Category</label>
+                    <select asp-for="CategoryId" class="form-control" asp-items="Model.Categories"></select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+
+                <!-- Author -->
+                <div class="form-group">
+                    <label for="Author">Author</label>
+                    <input asp-for="Author" class="form-control" placeholder="Author name" />
+                    <span asp-validation-for="Author" class="text-danger"></span>
+                </div>
+
+                <!-- Content -->
+                <div class="form-group">
+                    <label for="Content">Content</label>
+                    <textarea id="editor" asp-for="Content" class="form-control" rows="4" placeholder="Write blog content here..."></textarea>
+                    <span asp-validation-for="Content" class="text-danger"></span>
+                </div>
+
+                <!-- Old Image Preview -->
+                <div class="form-group">
+                    <label>Old Cover Image</label><br />
+                    <img id="oldImage" src="~/Uploads/BlogImages/@Model.CoverImageUrl" alt="Old Image" />
+                </div>
+
+
+                <!-- New Cover Image -->
+                <div class="form-group">
+                    <label asp-for="CoverImageFile" class="control-label">Replace Cover Image</label>
+                    <div class="custom-file">
+                        <label class="custom-file-label" asp-for="CoverImageFile">Choose your file</label>
+                        <input style="cursor:pointer" asp-for="CoverImageFile" class="custom-file-input" id="productImage">
+                        <p id="imageError"></p>
+                    </div>
+                    <p class="mt-2">Max File size: 5MB <br /> Allowed File: .jpeg, .jpg, .png <br /> Aspect ratio should be 1:1</p>
+                    <span asp-validation-for="CoverImageFile" class="text-danger"></span>
+                </div>
+
+                <!-- IsActive -->
+                <div class="form-check">
+                    <input asp-for="IsActive" class="form-check-input" />
+                    <label class="form-check-label" asp-for="IsActive">Is Active?</label>
+                </div>
+
+            </div>
+
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const productImageInput = document.getElementById('productImage');
+        const imageError = document.getElementById('imageError');
+
+        productImageInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+
+            if (file) {
+
+                if (file.size > 5 * 1024 * 1024) {
+                    imageError.textContent = 'File size is too large.';
+                    productImageInput.value = '';
+                } else if (file.type.startsWith('image/')) {
+                    imageError.textContent = '';
+                } else {
+                    imageError.textContent = 'Invalid image format.';
+                    productImageInput.value = '';
+                }
+            }
+        });
+
+        document.querySelector('.custom-file-input').addEventListener('change', function (e) {
+            var fileName = e.target.files[0].name;
+            var label = e.target.nextElementSibling;
+            label.textContent = fileName;
+        });
+    </script>
+}

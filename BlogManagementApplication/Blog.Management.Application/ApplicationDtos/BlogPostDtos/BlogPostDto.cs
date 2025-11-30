@@ -1,7 +1,4 @@
-﻿
-using Blog.Management.Domain.Entities;
-
-namespace Blog.Management.Application.ApplicationDtos.BlogPostDtos
+﻿namespace Blog.Management.Application.ApplicationDtos.BlogPostDtos
 {
     public record BlogPostDto
     {
