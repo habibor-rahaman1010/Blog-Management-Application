@@ -78,7 +78,10 @@
                 <!-- Old Image Preview -->
                 <div class="form-group">
                     <label>Old Cover Image</label><br />
-                    <img id="oldImage" src="~/Uploads/BlogImages/@Model.CoverImageUrl" alt="Old Image" />
+                    <img id="oldImage"
+                         src="@Url.Content("~/Uploads/BlogImages/" + Model.CoverImageUrl)"
+                         alt="Old Image" />
+
                 </div>
 
 

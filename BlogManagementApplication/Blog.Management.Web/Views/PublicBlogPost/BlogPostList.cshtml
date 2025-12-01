@@ -27,6 +27,7 @@
                         <div class="card-body">
                             <h5 class="card-title">@post.Title</h5>
                             <p class="card-text mb-1"><strong>Author:</strong> @post.Author</p>
+                            <p class="card-text mb-1"><strong>Details:</strong> @Html.Raw(@post.Content.Substring(0, 10))...</p>
                             <p class="card-text text-muted mb-1">
                                 <strong>Created:</strong> @post.CreatedAt.ToString("yyyy-MM-dd hh:mm tt")
                             </p>
@@ -34,8 +35,7 @@
                                 <strong>Updated:</strong>
                                 @(post.UpdatedAt.HasValue? post.UpdatedAt.Value.ToString("yyyy-MM-dd hh:mm tt") : "Not Updated")
                             </p>
-
-                            <a class="page-link" asp-area="" asp-controller="PublicBlogPost" asp-action="BlogPostList">Read More</a>
+                            <a class="page-link" asp-area="" asp-controller="PublicBlogPost" asp-action="BlogDetails" asp-route-id="@post.Id">Read More</a>
                         </div>
 
                         <div class="card-footer bg-white text-center">
