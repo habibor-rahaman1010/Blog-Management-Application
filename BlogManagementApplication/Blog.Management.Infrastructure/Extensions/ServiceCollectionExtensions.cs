@@ -43,19 +43,34 @@ namespace Blog.Management.Infrastructure.Extensions
             //add policy role configuration
             services.AddAuthorization(options =>
             {
+                options.AddPolicy("SuperAdminOnly", policy =>
+                {
+                    policy.RequireAssertion(ctx =>
+                        ctx.User.IsInRole("SuperAdmin"));
+                });
+
                 options.AddPolicy("AdminOnly", policy =>
                 {
-                    policy.RequireRole("Admin");
+                    policy.RequireAssertion(ctx =>
+                        ctx.User.IsInRole("SuperAdmin") ||
+                        ctx.User.IsInRole("Admin"));
                 });
 
                 options.AddPolicy("SupportAccess", policy =>
                 {
-                    policy.RequireRole("Admin", "Support");
+                    policy.RequireAssertion(ctx =>
+                        ctx.User.IsInRole("SuperAdmin") ||
+                        ctx.User.IsInRole("Admin") ||
+                        ctx.User.IsInRole("Support"));
                 });
 
                 options.AddPolicy("MemberAccess", policy =>
                 {
-                    policy.RequireRole("Admin", "Support", "Member");
+                    policy.RequireAssertion(ctx =>
+                        ctx.User.IsInRole("SuperAdmin") ||
+                        ctx.User.IsInRole("Admin") ||
+                        ctx.User.IsInRole("Support") ||
+                        ctx.User.IsInRole("Member"));
                 });
             });
 
@@ -65,25 +80,28 @@ namespace Blog.Management.Infrastructure.Extensions
             {
                 options.AddPolicy("ReadPermission", policy =>
                 {
-                    policy.RequireClaim("Read", "true");
+                    policy.RequireAssertion(ctx =>
+                        ctx.User.HasClaim("Read", "true"));
                 });
 
                 options.AddPolicy("CreatePermission", policy =>
                 {
-                    policy.RequireClaim("Create", "true");
+                    policy.RequireAssertion(ctx =>
+                        ctx.User.HasClaim("Create", "true"));
                 });
 
                 options.AddPolicy("UpdatePermission", policy =>
                 {
-                    policy.RequireClaim("Update", "true");
+                    policy.RequireAssertion(ctx =>
+                        ctx.User.HasClaim("Update", "true"));
                 });
 
                 options.AddPolicy("DeletePermission", policy =>
                 {
-                    policy.RequireClaim("Delete", "true");
+                    policy.RequireAssertion(ctx =>
+                        ctx.User.HasClaim("Delete", "true"));
                 });
             });
-
         }
     }
 }
