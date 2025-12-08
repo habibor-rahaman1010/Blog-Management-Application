@@ -1,0 +1,7 @@
+﻿@if (TempData.Peek<ResponseModel>("ResponseMessage") != null)
+{
+    var response = TempData.Get<ResponseModel>("ResponseMessage");
+    <div id="response-alert" class="alert alert-@(response.Type.ToString().ToLower())" role="alert">
+        @response.Message
+    </div>
+}

@@ -35,7 +35,7 @@ namespace Blog.Management.Application.Services
             {
                 var category = await _mapper.From(CreateRequestDto).AdaptToTypeAsync<Category>();
                 category.CreatedBy = "Habibor Rahaman";
-                category.CreatedAt = _applicationTime.GetCurrentTime();
+                category.CreatedAt = _applicationTime.GetCurrentDateTime();
 
                 await _unitOfWork.CategoryRepository.AddAsync(category);
                 await _unitOfWork.SaveChangesAsync();
@@ -148,7 +148,7 @@ namespace Blog.Management.Application.Services
                 //updateRequestDto.Adapt(category); -> Other way to maped!
 
                 _mapper.Map(updateRequestDto, category);
-                category.UpdatedAt = _applicationTime.GetCurrentTime();
+                category.UpdatedAt = _applicationTime.GetCurrentDateTime();
 
                 await _unitOfWork.CategoryRepository.UpdateAsync(category);
                 await _unitOfWork.SaveChangesAsync();

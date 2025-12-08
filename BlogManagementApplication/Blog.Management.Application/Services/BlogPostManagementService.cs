@@ -37,7 +37,7 @@ namespace Blog.Management.Application.Services
             {
                 var blogPost = await _mapper.From(createRequestDto).AdaptToTypeAsync<BlogPost>();
                 blogPost.Author = "Habibor Rahaman";
-                blogPost.CreatedAt = _applicationTime.GetCurrentTime();
+                blogPost.CreatedAt = _applicationTime.GetCurrentDateTime();
 
                 await _unitOfWork.BlogPostRepository.AddAsync(blogPost);
                 await _unitOfWork.SaveChangesAsync();
@@ -73,7 +73,7 @@ namespace Blog.Management.Application.Services
                 }
 
                 _mapper.Map(updateRequestDto, blogPost);
-                blogPost.UpdatedAt = _applicationTime.GetCurrentTime();
+                blogPost.UpdatedAt = _applicationTime.GetCurrentDateTime();
 
                 await _unitOfWork.BlogPostRepository.UpdateAsync(blogPost);
                 await _unitOfWork.SaveChangesAsync();

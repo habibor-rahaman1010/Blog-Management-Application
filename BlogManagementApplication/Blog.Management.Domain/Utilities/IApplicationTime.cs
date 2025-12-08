@@ -2,7 +2,7 @@
 {
     public interface IApplicationTime
     {
-        public DateTime GetCurrentTime();
-        public DateTime GetUtcNowTime();
+        public DateTime GetCurrentDateTime();
+        public DateTime GetUtcNowDateTime();
     }
 }

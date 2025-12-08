@@ -2,12 +2,12 @@
 {
     public class ApplicationTime : IApplicationTime
     {
-        public DateTime GetCurrentTime()
+        public DateTime GetCurrentDateTime()
         {
             return DateTime.Now;
         }
 
-        public DateTime GetUtcNowTime()
+        public DateTime GetUtcNowDateTime()
         {
             return DateTime.UtcNow;
         }
