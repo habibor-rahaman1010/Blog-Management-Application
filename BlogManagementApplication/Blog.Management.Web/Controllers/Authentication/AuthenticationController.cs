@@ -1,7 +1,8 @@
 ﻿using Blog.Management.Infrastructure.ApplicationIdentity;
-using Blog.Management.Web.Areas.Admin.Controllers;
 using Blog.Management.Web.Models.Authentication;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -25,7 +26,7 @@ namespace Blog.Management.Web.Controllers.Authentication
         }
 
         //--------User Registration Code-----------
-
+        [AllowAnonymous]
         public async Task<IActionResult> UserRegistration(string returnUrl = null)
         {
             try
@@ -84,6 +85,76 @@ namespace Blog.Management.Web.Controllers.Authentication
             }
 
             return View(model);
+        }
+
+        //--------Login Code-----------
+        [AllowAnonymous]
+        public async Task<IActionResult> UserLogin(string returnUrl = null)
+        {
+            var model = new LoginModel();
+
+            if (!string.IsNullOrEmpty(model.ErrorMessage))
+            {
+                ModelState.AddModelError(string.Empty, model.ErrorMessage);
+            }
+
+            model.ReturnUrl = returnUrl == null ? Url.Content("~/") : returnUrl;
+
+            // Clear the existing external cookie to ensure a clean login process
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+
+            model.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+            model.ReturnUrl = returnUrl;
+            return View(model);
+        }
+
+        [HttpPost, AutoValidateAntiforgeryToken, AllowAnonymous]
+        public async Task<IActionResult> UserLogin(LoginModel model)
+        {
+            model.ReturnUrl ??= Url.Content("~/");
+
+            model.ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+            if (ModelState.IsValid)
+            {
+                // This doesn't count login failures towards account lockout
+                // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation("User logged in.");
+                    return LocalRedirect(model.ReturnUrl);
+                }
+                if (result.RequiresTwoFactor)
+                {
+                    return RedirectToAction("./LoginWith2fa", new { ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
+                }
+                if (result.IsLockedOut)
+                {
+                    _logger.LogWarning("User account locked out.");
+                    return RedirectToAction("Lockout");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    return View(model);
+                }
+            }
+
+            return View(model);
+        }
+
+        //--------Logout Code-----------
+        [AllowAnonymous]
+        public async Task<IActionResult> UserLogout(string returnUrl = null)
+        {
+            await _signInManager.SignOutAsync();
+            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+
+            returnUrl ??= Url.Content("~/");
+
+            return LocalRedirect(returnUrl);
         }
     }
 }
