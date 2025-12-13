@@ -5,7 +5,7 @@ namespace Blog.Management.Application.ServiceInterfaces
 {
     public interface IBlogPostManagementService
     {
-        public Task<PagedWithResult<BlogPostDto>> GetBlogPostsAsync(int pageIndex, int pageSize);
+        public Task<PagedWithResult<BlogPostDto>> GetBlogPostsAsync(string title, int pageIndex, int pageSize);
         public Task<BlogPostDto> GetBlogPostByIdAsync(Guid id);
         public Task<BlogPostDto> CreateBlogPostAsync(BlogPostCreateDto CreateRequestDto);
         public Task<BlogPostDto> UpdateBlogPostAsync(Guid id, BlogPostUpdateDto updateRequestDto);

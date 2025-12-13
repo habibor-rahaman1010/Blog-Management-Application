@@ -10,6 +10,14 @@
 <div>
     <h2 class="mb-4">@ViewData["Title"]</h2>
 
+      <form class="mb-4" method="get" asp-controller="PublicBlogPost" asp-action="BlogPostList">
+        <div class="input-group">
+            <input type="text" name="searchQuery" class="form-control" placeholder="Search blog posts..."
+                   value="@(ViewBag.searchQuery ?? "")" />
+            <button class="btn btn-primary" type="submit">Search</button>
+        </div>
+    </form>
+
     <div class="row row-cols-1 row-cols-md-4 g-4">
 
         @if (Model.Items.Any())
@@ -84,6 +92,29 @@
         </nav>
     }
 </div>
+
+@if (totalPages > 0)
+{
+    <nav aria-label="Blog pagination" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                <a class="page-link" asp-action="BlogPostList" asp-route-pageIndex="@(currentPage - 1)">Previous</a>
+            </li>
+
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <li class="page-item @(i == currentPage ? "active" : "")">
+                    <a class="page-link" asp-action="BlogPostList" asp-route-pageIndex="@i">@i</a>
+                </li>
+            }
+
+            <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                <a class="page-link" asp-action="BlogPostList" asp-route-pageIndex="@(currentPage + 1)">Next</a>
+            </li>
+        </ul>
+    </nav>
+}
+
 
 @section Scripts {
     <script>

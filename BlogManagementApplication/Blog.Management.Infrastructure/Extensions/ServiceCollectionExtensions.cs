@@ -102,6 +102,11 @@ namespace Blog.Management.Infrastructure.Extensions
                         ctx.User.HasClaim("Delete", "true"));
                 });
             });
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.AccessDeniedPath = "/Authentication/AccessDenied";
+            });
         }
     }
 }

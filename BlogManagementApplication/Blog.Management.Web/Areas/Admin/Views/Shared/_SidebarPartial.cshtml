@@ -34,11 +34,19 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
+                            <a asp-area="Admin" asp-controller="UserManagement" asp-action="GetAllApplicationUser" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Application User List</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
                             <a asp-area="Admin" asp-controller="UserManagement" asp-action="CreateRole" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Create User Role</p>
                             </a>
                         </li>
+                     
                         <li class="nav-item">
                             <a asp-area="Admin" asp-controller="UserManagement" asp-action="UserRoleList" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>

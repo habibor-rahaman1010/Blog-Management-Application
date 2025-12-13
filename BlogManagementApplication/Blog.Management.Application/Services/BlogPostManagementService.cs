@@ -7,6 +7,7 @@ using Mapster;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Linq.Expressions;
 
 namespace Blog.Management.Application.Services
 {
@@ -151,11 +152,22 @@ namespace Blog.Management.Application.Services
             }
         }
 
-        public async Task<PagedWithResult<BlogPostDto>> GetBlogPostsAsync(int pageIndex, int pageSize)
+        public async Task<PagedWithResult<BlogPostDto>> GetBlogPostsAsync(string? searchQuery, int pageIndex, int pageSize)
         {
             try
             {
-                var blogPosts = await _unitOfWork.BlogPostRepository.GetPagedListAsync(null, null, null, pageIndex, pageSize);
+                Expression<Func<BlogPost, bool>>? filter = null;
+
+                if (!string.IsNullOrWhiteSpace(searchQuery))
+                {
+                    filter = (x) =>
+                        x.Title.Contains(searchQuery) ||
+                        x.Content.Contains(searchQuery) ||
+                        x.Author.Contains(searchQuery) ||
+                        (x.Category != null && x.Category.Name.Contains(searchQuery));
+                }
+
+                var blogPosts = await _unitOfWork.BlogPostRepository.GetPagedListAsync(filter, null, null, pageIndex, pageSize);
                 if (blogPosts != null && blogPosts.Items.Any())
                 {
                     return await _mapper.From(blogPosts).AdaptToTypeAsync<PagedWithResult<BlogPostDto>>();

@@ -2,24 +2,24 @@
 using Blog.Management.Infrastructure.ApplicationIdentity;
 using Blog.Management.Web.Areas.Admin.Models;
 using Blog.Management.Web.Areas.Admin.Models.UserManagementModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Blog.Management.Infrastructure.Extensions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Blog.Management.Web.Areas.Admin.Controllers.UserManagement
 {
     [Area("Admin")]
     public class UserManagementController : Controller
     {
-        private readonly RoleManager<ApplicationRole> _roleManager;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ApplicationRoleManager _roleManager;
+        private readonly ApplicationUserManager _userManager;
         private readonly IApplicationTime _applicationTime;
         private readonly ILogger<UserManagementController> _logger;
 
-        public UserManagementController(RoleManager<ApplicationRole> roleManager,
-            UserManager<ApplicationUser> userManager,
+        public UserManagementController(ApplicationRoleManager roleManager,
+            ApplicationUserManager userManager,
             IApplicationTime applicationTime,
             ILogger<UserManagementController> logger)
         {
@@ -29,14 +29,24 @@ namespace Blog.Management.Web.Areas.Admin.Controllers.UserManagement
             _logger = logger;
         }
 
-        public async Task<IActionResult> UserRoleList()
+        public async Task<IActionResult> UserRoleList(int page = 1, int pageSize = 10)
         {
-            var roles = await _roleManager.Roles.ToListAsync();
+            var totalRoles = await _roleManager.Roles.CountAsync();
+
+            var roles = await _roleManager.Roles
+            .OrderBy(r => r.Name)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalPages = (int)Math.Ceiling(totalRoles / (double)pageSize);
+
             return View(roles);
         }
 
-        //This is method for new role create...
-        //[Authorize(Policy = "CustomAdminAccess")]
+        [Authorize(Policy = "SuperAdminOnly")]
         public IActionResult CreateRole()
         {
             var model = new RoleCreateModel();
@@ -60,7 +70,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers.UserManagement
 
                     TempData.Put("ResponseMessage", new ResponseModel
                     {
-                        Message = "The Role has been created successfuly!",
+                        Message = "The Role has been created successfully!",
                         Type = ResponseTypes.Success
                     });
 
@@ -73,10 +83,36 @@ namespace Blog.Management.Web.Areas.Admin.Controllers.UserManagement
                         Message = "The Role creation has failed!",
                         Type = ResponseTypes.Danger
                     });
-                    _logger.LogError(ex, "Ultimatly the Role creation failed!");
+                    _logger.LogError(ex, "Ultimately the Role creation failed!");
                 }
             }
             return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllApplicationUser(int page = 1, int pageSize = 10)
+        {
+            try
+            {
+                var totalUsers = await _userManager.Users.CountAsync();
+
+                var users = await _userManager.Users
+                .OrderBy(u => u.UserName)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+                ViewBag.CurrentPage = page;
+                ViewBag.PageSize = pageSize;
+                ViewBag.TotalPages = (int)Math.Ceiling(totalUsers / (double)pageSize);
+
+
+                return View(users);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Exception Occurred: ", ex);
+            }
         }
     }
 }

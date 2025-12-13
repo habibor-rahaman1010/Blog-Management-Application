@@ -16,11 +16,13 @@ namespace Blog.Management.Web.Controllers
             _categoryManagementService = categoryManagementService;
         }
 
-        public async Task<IActionResult> BlogPostList(int pageIndex = 1, int pageSize = 12)
+        public async Task<IActionResult> BlogPostList(string? searchQuery, int pageIndex = 1, int pageSize = 12)
         {
             try
             {
-                var blogPosts = await _blogPostManagementService.GetBlogPostsAsync(pageIndex, pageSize);
+                ViewBag.SearchQuery = searchQuery ?? "";
+
+                var blogPosts = await _blogPostManagementService.GetBlogPostsAsync(searchQuery, pageIndex, pageSize);
                 if (blogPosts != null)
                 {
                     return View(blogPosts);
