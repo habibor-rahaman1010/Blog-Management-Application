@@ -3,7 +3,6 @@ using Blog.Management.Infrastructure.ApplicationIdentity;
 using Blog.Management.Infrastructure.Extensions;
 using Blog.Management.Web.Areas.Admin.Models;
 using Blog.Management.Web.Areas.Admin.Models.UserManagementModels;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
