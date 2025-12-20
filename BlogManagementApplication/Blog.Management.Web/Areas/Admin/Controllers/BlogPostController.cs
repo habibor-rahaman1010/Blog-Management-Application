@@ -34,7 +34,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers
 
         public async Task<IActionResult> BlogPostList(string? searchQuery, int pageIndex = 1, int pageSize = 2)
         {
-            var blogPost = await _blogPostManagementService.GetBlogPostsAsync(searchQuery, pageIndex, pageSize);
+            var blogPost = await _blogPostManagementService.GetBlogPostsAsync(searchQuery!, pageIndex, pageSize);
             return View(blogPost);
         }
 
@@ -148,6 +148,30 @@ namespace Blog.Management.Web.Areas.Admin.Controllers
                     Type = ResponseTypes.Danger
                 });
                 throw new ApplicationException("Exception Occured: ", ex);
+            }
+        }
+
+        [HttpPost, AutoValidateAntiforgeryToken]
+        public async Task<IActionResult> BlogPostDelete(Guid id)
+        {
+            try
+            {
+                if (id.ToString() != null)
+                {
+                    var blogPost = await _blogPostManagementService.GetBlogPostByIdAsync(id);
+                    var result = await _blogPostManagementService.DeleteBlogPostAsync(id);
+
+                    if (result == true)
+                    {
+                        _fileService.DeleteImage(blogPost.CoverImageUrl);
+                        return RedirectToAction(nameof(BlogPostList));
+                    }
+                }
+                return View();
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Exception Ocuured: ", ex);
             }
         }
     }

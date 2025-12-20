@@ -1,0 +1,78 @@
+﻿@model UserClaimEditModel
+
+@{
+    ViewData["Title"] = "Change User Claim";
+}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Change Role</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="#">Roles</a></li>
+                    <li class="breadcrumb-item active">Change Role</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- left column -->
+            <div class="col">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Change User Role</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- form start -->
+                    <form asp-antiforgery="true" asp-area="Admin" asp-controller="UserManagement" asp-action="UserClaimEdit" method="post" enctype="multipart/form-data">
+                        <partial name="_ResponsePartial" />
+                        <input type="hidden" asp-for="UserId" />
+                        <input type="hidden" asp-for="OriginalClaimType" />
+                        <input type="hidden" asp-for="OriginalClaimValue" />
+
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label asp-for="NewClaimType">Claim Type</label>
+                                <input type="text" asp-for="NewClaimType" class="form-control" />
+                                <span asp-validation-for="NewClaimType" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="NewClaimValue">Claim Value</label>
+                                <input type="text" asp-for="NewClaimValue" class="form-control" />
+                                <span asp-validation-for="NewClaimValue" class="text-danger"></span>
+                            </div>
+
+                        </div>
+                        <!-- /.card-body -->
+
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.card -->
+
+            </div>
+            <!--/.col (left) -->
+        </div>
+        <!-- /.row -->
+    </div><!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+@section Scripts {
+    <!--  This link for jquery validation * -->
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+}

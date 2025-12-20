@@ -180,6 +180,6 @@ namespace Blog.Management.Application.Services
                 _logger.LogError(ex, "Error fetching blog posts list.");
                 throw new ApplicationException("Unable to retrieve blog posts.", ex);
             }
-        }
+        }      
     }
 }

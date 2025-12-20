@@ -1,4 +1,5 @@
 ﻿using Blog.Management.Application.ApplicationDtos.BlogPostDtos;
+using Blog.Management.Domain.Entities;
 using Blog.Management.Domain.Utilities;
 
 namespace Blog.Management.Application.ServiceInterfaces

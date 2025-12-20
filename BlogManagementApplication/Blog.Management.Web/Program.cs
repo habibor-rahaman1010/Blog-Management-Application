@@ -82,7 +82,6 @@ namespace Blog.Management.Web
         
                 builder.Services.AddControllersWithViews();
 
-
                 var app = builder.Build();
 
                 // Configure the HTTP request pipeline.
@@ -96,12 +95,19 @@ namespace Blog.Management.Web
                     app.UseHsts();
                 }
 
+                app.UseAntiforgery();
+
                 app.UseHttpsRedirection();
                 app.UseStaticFiles();
 
                 app.UseRouting();
-
+                app.UseAuthentication();
                 app.UseAuthorization();
+
+                app.Use(async (context, next) =>
+                {
+                    await next.Invoke(context);
+                });
 
                 app.MapControllerRoute(
                     name: "areas",
