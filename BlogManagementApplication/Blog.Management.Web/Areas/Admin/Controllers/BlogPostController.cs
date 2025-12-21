@@ -32,7 +32,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> BlogPostList(string? searchQuery, int pageIndex = 1, int pageSize = 2)
+        public async Task<IActionResult> BlogPostList(string? searchQuery, int pageIndex = 1, int pageSize = 10)
         {
             var blogPost = await _blogPostManagementService.GetBlogPostsAsync(searchQuery!, pageIndex, pageSize);
             return View(blogPost);

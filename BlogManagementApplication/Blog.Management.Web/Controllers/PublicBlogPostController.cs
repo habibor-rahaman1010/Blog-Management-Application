@@ -22,7 +22,7 @@ namespace Blog.Management.Web.Controllers
             {
                 ViewBag.SearchQuery = searchQuery ?? "";
 
-                var blogPosts = await _blogPostManagementService.GetBlogPostsAsync(searchQuery, pageIndex, pageSize);
+                var blogPosts = await _blogPostManagementService.GetBlogPostsAsync(searchQuery!, pageIndex, pageSize);
                 if (blogPosts != null)
                 {
                     return View(blogPosts);

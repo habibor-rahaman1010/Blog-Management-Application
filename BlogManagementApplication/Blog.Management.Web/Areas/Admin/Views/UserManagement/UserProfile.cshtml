@@ -1,0 +1,74 @@
+﻿@model UserProfileViewModel
+
+@{
+    ViewData["Title"] = "User Profile";
+}
+
+<h3 class="mb-4 pt-3 text-center">User Profile Information</h3>
+
+<table class="table table-bordered table-striped w-75 mx-auto">
+    <tbody>
+        <tr>
+            <th>First Name</th>
+            <td>@Model.User.FirstName</td>
+        </tr>
+        <tr>
+            <th>Last Name</th>
+            <td>@Model.User.LastName</td>
+        </tr>
+        <tr>
+            <th>Address</th>
+            <td>@Model.User.Address</td>
+        </tr>
+        <tr>
+            <th>User Name</th>
+            <td>@Model.User.UserName</td>
+        </tr>
+        <tr>
+            <th>Email</th>
+            <td>@Model.User.Email</td>
+        </tr>
+        <tr>
+            <th>Phone Number</th>
+            <td>@Model.User.PhoneNumber</td>
+        </tr>
+        <tr>
+            <th>Email Confirmed</th>
+            <td>@(Model.User.EmailConfirmed ? "Yes" : "No")</td>
+        </tr>
+        <tr>
+            <th>Phone Number Confirmed</th>
+            <td>@(Model.User.PhoneNumberConfirmed ? "Yes" : "No")</td>
+        </tr>
+        <tr>
+            <th>Two Factor Enabled</th>
+            <td>@(Model.User.TwoFactorEnabled ? "Yes" : "No")</td>
+        </tr>
+        <tr>
+            <th>Lockout Enabled</th>
+            <td>@(Model.User.LockoutEnabled ? "Yes" : "No")</td>
+        </tr>
+
+        <tr>
+            <th>Roles</th>
+            <td>
+                @if (Model.Roles.Any())
+                {
+                    @string.Join(", ", Model.Roles)
+                }
+                else
+                {
+                    <span class="text-muted">No role assigned</span>
+                }
+            </td>
+        </tr>
+        <tr>
+            <th>Concurrency Stamp</th>
+            <td>@Model.User.ConcurrencyStamp</td>
+        </tr>
+        <tr>
+            <th>User ID</th>
+            <td>@Model.User.Id</td>
+        </tr>
+    </tbody>
+</table>

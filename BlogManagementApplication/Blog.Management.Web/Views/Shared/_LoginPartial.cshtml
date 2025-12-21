@@ -7,15 +7,18 @@
 @if (SignInManager.IsSignedIn(User))
 {
     <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+        <a class="nav-link text-dark" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin Dashboard</a>
     </li>
 
     <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="Authentication" title="Manage">Hello @User.Identity?.Name!</a>
+        <a class="nav-link text-dark" href="#" data-bs-toggle="modal" data-bs-target="#userProfileModal" title="Manage">
+            Hello @User.Identity?.Name!
+        </a>
     </li>
+
     <li class="nav-item">
-        <form class="form-inline" asp-area="" asp-controller="Authentication" asp-action="UserLogout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button  type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+        <form class="form-inline" asp-area="" asp-controller="Authentication" asp-action="UserLogout" asp-route-returnUrl="@Url.Action("BlogPostList", "PublicBlogPost", new { area = "" })">
+        <button  type="submit" class="nav-link btn btn-link text-dark">Logout</button>
         </form>
     </li>
 }

@@ -115,7 +115,7 @@ namespace Blog.Management.Web
 
                 app.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=PublicBlogPost}/{action=BlogPostList}/{id?}");
 
                 await app.RunAsync();
             }

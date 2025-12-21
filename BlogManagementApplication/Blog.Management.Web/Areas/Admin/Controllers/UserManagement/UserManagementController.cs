@@ -501,5 +501,25 @@ namespace Blog.Management.Web.Areas.Admin.Controllers.UserManagement
                 throw new ApplicationException("Exception Occurred: ", ex);
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> UserProfile()
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+            {
+                return NotFound();
+            }
+
+            var roles = await _userManager.GetRolesAsync(currentUser);
+
+            var userViewModel = new UserProfileViewModel
+            {
+                User = currentUser,
+                Roles = roles
+            };
+
+            return View(userViewModel);
+        }
     }
 }
