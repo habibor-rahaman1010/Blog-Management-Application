@@ -1,6 +1,7 @@
 ﻿using Blog.Management.Application.ApplicationDtos.BlogPostDtos;
 using Blog.Management.Application.ServiceInterfaces;
 using Blog.Management.Domain.Entities;
+using Blog.Management.Domain.QueryParams;
 using Blog.Management.Domain.UnitOfWorkInterface;
 using Blog.Management.Domain.Utilities;
 using Mapster;
@@ -180,6 +181,26 @@ namespace Blog.Management.Application.Services
                 _logger.LogError(ex, "Error fetching blog posts list.");
                 throw new ApplicationException("Unable to retrieve blog posts.", ex);
             }
-        }      
+        }
+
+        public async Task<PagedWithResult<BlogPostSPDto>> GetBlogPostsBySPAsync(int pageIndex, int pageSize, BlogPostQueryparams request)
+        {
+            try
+            {
+                var blogPosts = await _unitOfWork.BlogPostRepository.GetBlogPostsByStoredProcedure(pageIndex, pageSize, request);
+
+                if (blogPosts != null && blogPosts.Items.Any())
+                {
+                    return await _mapper.From(blogPosts).AdaptToTypeAsync<PagedWithResult<BlogPostSPDto>>();
+                }
+
+                return new PagedWithResult<BlogPostSPDto>();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching blog posts list.");
+                throw new ApplicationException("Unable to retrieve blog posts.", ex);
+            }
+        }
     }
 }

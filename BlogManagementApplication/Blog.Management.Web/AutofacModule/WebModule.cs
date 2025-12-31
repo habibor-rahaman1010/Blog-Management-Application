@@ -7,6 +7,9 @@ using Blog.Management.Domain.Utilities;
 using Blog.Management.Infrastructure.DbContexts;
 using Blog.Management.Infrastructure.Repositories;
 using Blog.Management.Infrastructure.UnitOfWork;
+using Blog.Management.Infrastructure.Utilities;
+using Microsoft.Data.SqlClient;
+using System.Data.Common;
 
 namespace Blog.Management.Web.AutofacModule
 {
@@ -55,6 +58,12 @@ namespace Blog.Management.Web.AutofacModule
                 .As<IBlogPostManagementService>().InstancePerLifetimeScope();
 
             builder.RegisterType<FileService>().As<IFileService>().SingleInstance();
+
+
+            builder.Register(c => new SqlConnection(_connectionString))
+                .As<DbConnection>().InstancePerLifetimeScope();
+
+            builder.RegisterType<SqlUtility>().As<ISqlUtility>().InstancePerLifetimeScope();
 
         }
     }

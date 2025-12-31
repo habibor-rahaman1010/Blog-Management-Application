@@ -1,5 +1,6 @@
 ﻿using Blog.Management.Application.ApplicationDtos.BlogPostDtos;
 using Blog.Management.Application.ServiceInterfaces;
+using Blog.Management.Domain.QueryParams;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Management.Web.Controllers
@@ -28,6 +29,24 @@ namespace Blog.Management.Web.Controllers
                     return View(blogPosts);
                 }
                 return View(new List<BlogPostDto>());
+            }
+
+            catch (Exception ex)
+            {
+                throw new ApplicationException("Exception Occired: ", ex);
+            }
+        }
+
+        public async Task<IActionResult> BlogPostListSP(int pageIndex = 1, int pageSize = 12, BlogPostQueryparams request = null)
+        {
+            try
+            {
+                var blogPosts = await _blogPostManagementService.GetBlogPostsBySPAsync(pageIndex, pageSize, request);
+                if (blogPosts != null)
+                {
+                    return View(blogPosts);
+                }
+                return View(new List<BlogPostSPDto>());
             }
 
             catch (Exception ex)
