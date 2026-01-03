@@ -3,6 +3,7 @@ using Blog.Management.Application.ServiceInterfaces;
 using Blog.Management.Web.CustomActionFilters;
 using Mapster;
 using MapsterMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Management.Web.Areas.Admin.Controllers
@@ -24,6 +25,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "MemberAccess")]
         public async Task<IActionResult> CategoryList(int pageIndex = 1, int pageSize = 10)
         {
             var categoris = await _categoryManagementService.GetCategoriesAsync(pageIndex, pageSize);
@@ -31,6 +33,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "MemberAccess")]
         public async Task<IActionResult> CategoryDetails ([FromRoute] Guid id)
         {
             try
@@ -51,6 +54,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers
 
         [HttpGet]
         [ValidateModel]
+        [Authorize(Policy = "MemberAccess")]
         public IActionResult CreateCategory()
         {
             try
@@ -66,6 +70,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers
 
         [HttpPost, ValidateAntiForgeryToken]
         [ValidateModel]
+        [Authorize(Policy = "MemberAccess")]
         public async Task<IActionResult> CreateCategory(CategoryCreateDto category)
         {
             try
@@ -81,6 +86,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> CategoryUpdate(Guid id)
         {
             try
@@ -102,6 +108,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers
 
         [HttpPost, ValidateAntiForgeryToken]
         [ValidateModel]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> CategoryUpdate(Guid id, CategoryUpdateDto category)
         {
             try
@@ -117,6 +124,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "SuperAdminOnly")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var category = await _categoryManagementService.GetCategoryByIdAsync(id);
@@ -130,6 +138,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers
 
 
         [HttpPost, ActionName("Delete")]
+        [Authorize(Policy = "SuperAdminOnly")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {

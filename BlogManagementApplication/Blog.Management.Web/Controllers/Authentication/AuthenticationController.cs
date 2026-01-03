@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-
 namespace Blog.Management.Web.Controllers.Authentication
 {
+    [AllowAnonymous]
     public class AuthenticationController : Controller
     {
         private readonly ApplicationUserManager _userManager;

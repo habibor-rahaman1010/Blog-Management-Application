@@ -1,10 +1,12 @@
 ﻿using Blog.Management.Application.ApplicationDtos.BlogPostDtos;
 using Blog.Management.Application.ServiceInterfaces;
 using Blog.Management.Domain.QueryParams;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Management.Web.Controllers
 {
+    [AllowAnonymous]
     public class PublicBlogPostController : Controller
     {
         private readonly IBlogPostManagementService _blogPostManagementService;

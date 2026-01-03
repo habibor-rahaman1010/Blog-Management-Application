@@ -6,6 +6,7 @@ using Blog.Management.Web.Areas.Admin.Models;
 using Blog.Management.Web.CustomActionFilters;
 using Mapster;
 using MapsterMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Management.Web.Areas.Admin.Controllers
@@ -32,6 +33,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers
             _logger = logger;
         }
 
+        [Authorize(Policy = "MemberAccess")]
         public async Task<IActionResult> BlogPostList(string? searchQuery, int pageIndex = 1, int pageSize = 10)
         {
             var blogPost = await _blogPostManagementService.GetBlogPostsAsync(searchQuery!, pageIndex, pageSize);
@@ -39,6 +41,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "MemberAccess")]
         public async Task<IActionResult> BlogPostCreate()
         {
             try
@@ -55,6 +58,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken, ValidateModel]
+        [Authorize(Policy = "MemberAccess")]
         public async Task<IActionResult> BlogPostCreate(BlogPostCreateDto request)
         {
             try
@@ -89,6 +93,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> BlogPostUpdate(Guid id)
         {
             try
@@ -110,6 +115,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers
 
         [HttpPost, ValidateModel]
         [AutoValidateAntiforgeryToken]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> BlogPostUpdate(Guid id, BlogPostUpdateDto request)
         {
             try
@@ -152,6 +158,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers
         }
 
         [HttpPost, AutoValidateAntiforgeryToken]
+        [Authorize(Policy = "SuperAdminOnly")]
         public async Task<IActionResult> BlogPostDelete(Guid id)
         {
             try

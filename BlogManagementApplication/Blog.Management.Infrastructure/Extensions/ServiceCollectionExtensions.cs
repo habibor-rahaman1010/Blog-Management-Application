@@ -46,20 +46,20 @@ namespace Blog.Management.Infrastructure.Extensions
                 options.AddPolicy("SuperAdminOnly", policy =>
                 {
                     policy.RequireAssertion(ctx =>
-                        ctx.User.IsInRole("SuperAdmin"));
+                        ctx.User.IsInRole("Super Admin"));
                 });
 
                 options.AddPolicy("AdminOnly", policy =>
                 {
                     policy.RequireAssertion(ctx =>
-                        ctx.User.IsInRole("SuperAdmin") ||
+                        ctx.User.IsInRole("Super Admin") ||
                         ctx.User.IsInRole("Admin"));
                 });
 
                 options.AddPolicy("SupportAccess", policy =>
                 {
                     policy.RequireAssertion(ctx =>
-                        ctx.User.IsInRole("SuperAdmin") ||
+                        ctx.User.IsInRole("Super Admin") ||
                         ctx.User.IsInRole("Admin") ||
                         ctx.User.IsInRole("Support"));
                 });
@@ -67,7 +67,7 @@ namespace Blog.Management.Infrastructure.Extensions
                 options.AddPolicy("MemberAccess", policy =>
                 {
                     policy.RequireAssertion(ctx =>
-                        ctx.User.IsInRole("SuperAdmin") ||
+                        ctx.User.IsInRole("Super Admin") ||
                         ctx.User.IsInRole("Admin") ||
                         ctx.User.IsInRole("Support") ||
                         ctx.User.IsInRole("Member"));

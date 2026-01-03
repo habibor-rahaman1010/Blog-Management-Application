@@ -3,6 +3,7 @@ using Blog.Management.Infrastructure.ApplicationIdentity;
 using Blog.Management.Infrastructure.Extensions;
 using Blog.Management.Web.Areas.Admin.Models;
 using Blog.Management.Web.Areas.Admin.Models.UserManagementModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,8 @@ namespace Blog.Management.Web.Areas.Admin.Controllers.UserManagement
             _logger = logger;
         }
 
+        [HttpGet]
+        [Authorize(Policy = "SuperAdminOnly")]
         public async Task<IActionResult> UserRoleList(int page = 1, int pageSize = 10)
         {
             var totalRoles = await _roleManager.Roles.CountAsync();
@@ -47,6 +50,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers.UserManagement
         }
 
         [HttpGet]
+        [Authorize(Policy = "SuperAdminOnly")]
         public IActionResult CreateRole()
         {
             var model = new RoleCreateModel();
@@ -54,6 +58,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers.UserManagement
         }
 
         [HttpPost, ValidateAntiForgeryToken]
+        [Authorize(Policy = "SuperAdminOnly")]
         public async Task<IActionResult> CreateRole(RoleCreateModel model)
         {
             if (ModelState.IsValid)
@@ -90,6 +95,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers.UserManagement
         }
 
         [HttpGet]
+        [Authorize(Policy = "SuperAdminOnly")]
         public async Task<IActionResult> UpdateUserRole(Guid id)
         {
             var role = await _roleManager.FindByIdAsync(id.ToString());
@@ -114,6 +120,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers.UserManagement
         }
 
         [HttpPost, ValidateAntiForgeryToken]
+        [Authorize(Policy = "SuperAdminOnly")]
         public async Task<IActionResult> UpdateUserRole(RoleUpdateModel model)
         {
             if (ModelState.IsValid)
@@ -168,6 +175,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers.UserManagement
         }
 
         [HttpPost, AutoValidateAntiforgeryToken]
+        [Authorize(Policy = "SuperAdminOnly")]
         public async Task<IActionResult> DeleteUserRole(Guid id)
         {
             var role = await _roleManager.FindByIdAsync(id.ToString());
@@ -220,6 +228,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers.UserManagement
 
 
         [HttpGet]
+        [Authorize(Policy = "SuperAdminOnly")]
         public IActionResult ChangeUserRole()
         {
             try
@@ -235,6 +244,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers.UserManagement
         }
 
         [HttpPost, ValidateAntiForgeryToken]
+        [Authorize(Policy = "SuperAdminOnly")]
         public async Task<IActionResult> ChangeUserRole(UserRoleChangeModel model)
         {
             try
@@ -281,6 +291,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers.UserManagement
 
         //This is code for get list of claim
         [HttpGet]
+        [Authorize(Policy = "SuperAdminOnly")]
         public async Task<IActionResult> UserClaimsList(int page = 1, int pageSize = 10)
         {
             var usersWithClaims = new List<UserClaimListModel>();
@@ -316,6 +327,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers.UserManagement
 
         // This code for claim create
         [HttpGet]
+        [Authorize(Policy = "SuperAdminOnly")]
         public IActionResult AddUserClaim()
         {
             try
@@ -331,6 +343,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers.UserManagement
         }
 
         [HttpPost, ValidateAntiForgeryToken]
+        [Authorize(Policy = "SuperAdminOnly")]
         public async Task<IActionResult> AddUserClaim(AddUserClaimModel model)
         {
             try
@@ -356,6 +369,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers.UserManagement
         }
 
         [HttpGet]
+        [Authorize(Policy = "SuperAdminOnly")]
         public async Task<IActionResult> UserClaimEdit(Guid userId, string claimType, string claimValue)
         {
             if (userId.ToString() == null || claimType == null || claimValue == null)
@@ -384,6 +398,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers.UserManagement
 
         //This method for claim edit
         [HttpPost, ValidateAntiForgeryToken]
+        [Authorize(Policy = "SuperAdminOnly")]
         public async Task<IActionResult> UserClaimEdit(UserClaimEditModel model)
         {
             if (!ModelState.IsValid)
@@ -426,6 +441,8 @@ namespace Blog.Management.Web.Areas.Admin.Controllers.UserManagement
 
 
         //This code for delete claim of a user
+        [HttpGet]
+        [Authorize(Policy = "SuperAdminOnly")]
         public async Task<IActionResult> UserClaimDelete(Guid userId, string claimType, string claimValue)
         {
             if (userId.ToString() == null || claimType == null || claimValue == null)
@@ -477,6 +494,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers.UserManagement
 
 
         [HttpGet]
+        [Authorize(Policy = "SuperAdminOnly")]
         public async Task<IActionResult> GetAllApplicationUser(int page = 1, int pageSize = 10)
         {
             try
@@ -503,6 +521,7 @@ namespace Blog.Management.Web.Areas.Admin.Controllers.UserManagement
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> UserProfile()
         {
             var currentUser = await _userManager.GetUserAsync(User);
